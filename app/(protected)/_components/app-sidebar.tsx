@@ -1,16 +1,16 @@
 "use client";
 
 import {
-  House,
   LayoutDashboard,
+  List,
   LogOut,
-  Mail,
-  ReceiptText,
+  Package,
+  ShoppingBasket,
   UsersRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -31,6 +31,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import api from "@/lib/api";
+
+type Props = {
+  name: string;
+  email: string;
+};
 
 const items = [
   {
@@ -39,33 +45,32 @@ const items = [
     icon: LayoutDashboard,
   },
   {
-    title: "Imóveis",
-    url: "/dashboard/properties",
-    icon: House,
+    title: "Produtos",
+    url: "/dashboard/products",
+    icon: ShoppingBasket,
   },
   {
-    title: "Contatos",
-    url: "/dashboard/leads",
-    icon: Mail,
+    title: "Categorias",
+    url: "/dashboard/categories",
+    icon: List,
   },
   {
-    title: "Clientes",
-    url: "/dashboard/customers",
+    title: "Movimentações",
+    url: "/dashboard/stock-movements",
+    icon: Package,
+  },
+  {
+    title: "Usuários",
+    url: "/dashboard/users",
     icon: UsersRound,
-  },
-  {
-    title: "Contratos",
-    url: "/dashboard/contracts",
-    icon: ReceiptText,
   },
 ];
 
-export function AppSidebar() {
-  const router = useRouter();
+export function AppSidebar({ name, email }: Props) {
   const pathname = usePathname();
 
   const handleSignOut = async () => {
-    console.log("Signing out...");
+    await api.post("/auth/logout");
   };
 
   return (
@@ -111,10 +116,8 @@ export function AppSidebar() {
                     <AvatarFallback>F</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm">Admin</p>
-                    <p className="text-muted-foreground text-sm">
-                      admin@mail.com
-                    </p>
+                    <p className="text-sm">{name}</p>
+                    <p className="text-muted-foreground text-sm">{email}</p>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

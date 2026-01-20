@@ -1,53 +1,33 @@
 'use server'
 
-import { api } from "@/lib/api";
-import { action } from "@/lib/safe-action";
-import { loginSchema } from "@/lib/validators/auth/login-schema";
+import api from "@/lib/api";
+import { LoginSchema, loginSchema } from "@/lib/validators/auth/login-schema";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const loginAction = action.inputSchema(loginSchema).action(async ({ parsedInput }) => {
+export async function loginAction(data: LoginSchema) {
+  const parsedData = loginSchema.safeParse(data);
+  if (!parsedData.success) {
+    return { error: parsedData.error.flatten().fieldErrors };
+  }
+
   let response;
+
   try {
-    response = await api.post("/auth/login", parsedInput);
+    response = await api.post("/auth/login", parsedData.data);
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(error.response?.data.error || 'Erro ao fazer login.');
+      return { error: error.response?.data.error || 'Erro ao fazer login.' };
     }
 
-    throw new Error('Erro ao tentar fazer login. Por favor, tente novamente.');
+    return { error: 'Erro ao tentar fazer login. Por favor, tente novamente.' };
   }
 
   const cookieStore = await cookies();
   await cookieStore.set('access_token', response.data.data.token, {
     path: '/',
   });
+
   redirect("/dashboard");
-});
-// export async function loginAction(data: LoginSchema) {
-//   const parsedData = loginSchema.safeParse(data);
-
-//   if (!parsedData.success) {
-//     return { error: parsedData.error.flatten().fieldErrors };
-//   }
-
-//   let response;
-
-//   try {
-//     response = await api.post("/auth/login", parsedData.data);
-//   } catch (error) {
-//     if (error instanceof AxiosError) {
-//       return { error: error.response?.data.error || 'Erro ao fazer login.' };
-//     }
-
-//     return { error: 'Erro ao tentar fazer login. Por favor, tente novamente.' };
-//   }
-
-//   const cookieStore = await cookies();
-//   await cookieStore.set('access_token', response.data.data.token, {
-//     path: '/',
-//   });
-
-//   redirect("/dashboard");
-// }
+}

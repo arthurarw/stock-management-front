@@ -1,7 +1,8 @@
+"use server";
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { redirect } from "next/navigation";
-import { getAccessToken } from "../../lib/auth";
+import api from "@/lib/api";
 import { AppSidebar } from "./_components/app-sidebar";
 
 export default async function ProtectedLayout({
@@ -9,15 +10,13 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = await getAccessToken();
+  const user = await api.get("/auth/me").then((res) => res.data);
 
-  if (!token) {
-    redirect("/login");
-  }
+  console.log(user);
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar name={user.name} email={user.email} />
       <main className="w-full">
         <SidebarTrigger />
         {children}

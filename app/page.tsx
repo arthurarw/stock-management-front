@@ -13,12 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginSchema, LoginSchema } from "@/lib/validators/auth/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAction } from "next-safe-action/hooks";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 export default function LoginPage() {
+  const [isPending, startTransition] = useTransition();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
@@ -29,22 +28,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const loginFormAction = useAction(loginAction, {
-    onSuccess: () => {
-      toast.success("Login realizado com sucesso!");
-    },
-    onError: () => {
-      setErrorMessage(
-        "Erro ao fazer login. Verifique suas credenciais e tente novamente.",
-      );
-    },
-  });
-
   const onSubmit = (data: LoginSchema) => {
-    loginFormAction.execute(data);
-  };
-
-  /*const onSubmit = (data: LoginSchema) => {
     setErrorMessage(null);
     startTransition(async () => {
       const result = await loginAction(data);
@@ -53,7 +37,7 @@ export default function LoginPage() {
         return;
       }
     });
-  };*/
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted px-4">
@@ -101,8 +85,8 @@ export default function LoginPage() {
               <p className="text-sm text-red-500">{errorMessage}</p>
             )}
 
-            <Button type="submit" disabled={loginFormAction.isPending}>
-              {loginFormAction.isPending ? "Logging in..." : "Login"}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Logging in..." : "Login"}
             </Button>
           </form>
         </CardContent>
