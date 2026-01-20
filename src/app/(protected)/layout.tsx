@@ -6,6 +6,7 @@ import { UserProvider } from "@/contexts/UserContext";
 import { getMe } from "@/http/get-me";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "./_components/app-sidebar";
+import { Providers } from "./providers";
 
 export default async function ProtectedLayout({
   children,
@@ -18,15 +19,17 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <UserProvider user={user.data}>
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-full">
-          <SidebarTrigger />
-          {children}
-          <Toaster position="bottom-center" richColors theme="light" />
-        </main>
-      </SidebarProvider>
-    </UserProvider>
+    <Providers>
+      <UserProvider user={user.data}>
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="w-full">
+            <SidebarTrigger />
+            {children}
+            <Toaster position="bottom-center" richColors theme="light" />
+          </main>
+        </SidebarProvider>
+      </UserProvider>
+    </Providers>
   );
 }

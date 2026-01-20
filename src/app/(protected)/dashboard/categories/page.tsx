@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,15 +18,19 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
-import { getCategories } from "@/http/get-categories";
+import { useCategories } from "@/hooks/use-categories";
+import { useState } from "react";
 import StoreCategoryButton from "./_components/store-category-button";
 import { categoriesTableColumns } from "./_components/table-columns";
 
-const CategoriesPage = async () => {
-  const categories = await getCategories({
-    includeProducts: true,
-    offset: 0,
-    limit: 10,
+const CategoriesPage = () => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data, isLoading } = useCategories({
+    includeProductCount: true,
+    offset: pageIndex * pageSize,
+    limit: pageSize,
   });
 
   const breadcrumbs = (
@@ -55,7 +61,21 @@ const CategoriesPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <DataTable data={categories} columns={categoriesTableColumns} />
+        {isLoading && <div>Carregando...</div>}
+        {!isLoading && data && (
+          <DataTable
+            data={data}
+            columns={categoriesTableColumns}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+            hasMore={data.length === pageSize}
+            onPageChange={setPageIndex}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPageIndex(0);
+            }}
+          />
+        )}
       </PageContent>
     </PageContainer>
   );

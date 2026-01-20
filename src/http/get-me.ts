@@ -1,16 +1,9 @@
 'use server';
 
-import api from "./api";
-import { fetchCookies } from "./fetch-cookies";
+import apiServer from "./api-server";
 
 export async function getMe() {
-  const cookies = await fetchCookies();
-
-  const { data } = await api.get("/auth/me", {
-    headers: {
-      Cookie: cookies
-    }
-  });
+  const { data } = await apiServer.get("/auth/me").then(res => res).catch(err => err.response);
 
   return data;
 }

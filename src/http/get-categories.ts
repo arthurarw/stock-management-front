@@ -1,25 +1,11 @@
 'use server';
 
-import { URLSearchParams } from "url";
+import { GetCategoriesParams } from "@/interfaces/category";
 import apiServer from "./api-server";
 
-export async function getCategories(filters: {
-  includeProducts?: boolean;
-  offset: number;
-  limit: number;
-}) {
-  const searchParams = new URLSearchParams(
-    Object.entries(filters).reduce((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = String(value);
-      }
-
-      return acc;
-    }, {} as Record<string, string>)
-  );
-
-  const url = `/categories?${searchParams.toString()}`;
-
-  const { data } = await apiServer.get(url);
+export async function getCategories(params: GetCategoriesParams) {
+  const { data } = await apiServer.get('/categories', {
+    params
+  });
   return data.data;
 }

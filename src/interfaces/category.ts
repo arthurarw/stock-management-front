@@ -5,3 +5,9 @@ export interface Category {
   createdAt: Date;
   productCount?: number;
 }
+
+export type GetCategoriesParams = {
+  includeProductCount?: boolean
+  offset?: number
+  limit?: number
+}
