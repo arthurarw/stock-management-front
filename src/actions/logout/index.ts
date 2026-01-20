@@ -1,6 +1,6 @@
 "use server";
 
-import api from "@/http/api";
+import apiServer from "@/http/api-server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -12,12 +12,7 @@ export async function logoutAction() {
     redirect('/');
   }
 
-  const response = await api.post("/auth/logout");
-
-  console.log("Logout response:", response);
-
-  console.log("Clearing access token cookie and redirecting...");
-
+  await apiServer.post("/auth/logout");
   cookieStore.delete('access_token');
   redirect('/');
 }
