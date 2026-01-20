@@ -3,6 +3,7 @@
 import { getLoggedUser } from "@/actions/me";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { UserProvider } from "@/contexts/UserContext";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "./_components/app-sidebar";
 
@@ -17,13 +18,15 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar name={user.data.name} email={user.data.email} />
-      <main className="w-full">
-        <SidebarTrigger />
-        {children}
-        <Toaster position="bottom-center" richColors theme="light" />
-      </main>
-    </SidebarProvider>
+    <UserProvider user={user.data}>
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="w-full">
+          <SidebarTrigger />
+          {children}
+          <Toaster position="bottom-center" richColors theme="light" />
+        </main>
+      </SidebarProvider>
+    </UserProvider>
   );
 }

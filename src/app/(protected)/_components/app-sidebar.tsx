@@ -31,12 +31,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useUser } from "@/contexts/UserContext";
 import api from "@/lib/api";
-
-type Props = {
-  name: string;
-  email: string;
-};
 
 const items = [
   {
@@ -66,7 +62,8 @@ const items = [
   },
 ];
 
-export function AppSidebar({ name, email }: Props) {
+export function AppSidebar() {
+  const user = useUser();
   const pathname = usePathname();
 
   const handleSignOut = async () => {
@@ -117,8 +114,10 @@ export function AppSidebar({ name, email }: Props) {
                     <AvatarFallback>F</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm">{name}</p>
-                    <p className="text-muted-foreground text-sm">{email}</p>
+                    <p className="text-sm">{user?.name}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {user?.email}
+                    </p>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
