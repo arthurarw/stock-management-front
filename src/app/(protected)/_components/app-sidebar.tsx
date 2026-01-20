@@ -32,7 +32,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useUser } from "@/contexts/UserContext";
-import api from "@/lib/api";
+import api from "@/http/api";
 
 const items = [
   {

@@ -1,6 +1,6 @@
 "use server";
 
-import api from "@/lib/api";
+import api from "@/http/api";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

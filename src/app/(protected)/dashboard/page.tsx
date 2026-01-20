@@ -1,6 +1,6 @@
 "use client";
 
-import api from "@/lib/api";
+import api from "@/http/api";
 
 export default function Page() {
   async function fetchData() {

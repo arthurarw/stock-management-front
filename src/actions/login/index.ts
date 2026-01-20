@@ -1,6 +1,6 @@
 'use server'
 
-import api from "@/lib/api";
+import api from "@/http/api";
 import { LoginSchema, loginSchema } from "@/lib/validators/auth/login-schema";
 import { AxiosError } from "axios";
 import { cookies } from "next/headers";

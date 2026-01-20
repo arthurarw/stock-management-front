@@ -1,9 +1,9 @@
 "use server";
 
-import { getLoggedUser } from "@/actions/me";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { UserProvider } from "@/contexts/UserContext";
+import { getMe } from "@/http/get-me";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "./_components/app-sidebar";
 
@@ -12,7 +12,7 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getLoggedUser();
+  const user = await getMe();
   if (user.error) {
     redirect("/");
   }
