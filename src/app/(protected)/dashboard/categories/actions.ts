@@ -1,7 +1,9 @@
 "use server";
 
+import { deleteCategory } from "@/http/delete-category";
 import { storeCategory } from "@/http/store-category";
 import { updateCategory } from "@/http/update-category";
+import { actionClient } from "@/lib/safe-action";
 import { AxiosError } from "axios";
 import z from "zod";
 
@@ -12,6 +14,10 @@ const categorySchema = z.object({
 const updateCategorySchema = z.object({
   id: z.uuid(),
   name: z.string().min(1, "O nome é obrigatório"),
+});
+
+const deleteCategorySchema = z.object({
+  id: z.uuid(),
 });
 
 export type StoreCategorySchema = z.infer<typeof categorySchema>;
@@ -87,3 +93,20 @@ export async function updateCategoryAction(id: string, data: FormData) {
     errors: null,
   }
 }
+
+
+
+export const deleteCategoryAction = actionClient.inputSchema(deleteCategorySchema).action(async ({ parsedInput }) => {
+  const { id } = parsedInput;
+
+  try {
+    await deleteCategory(id);
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      throw err;
+    }
+
+    console.error(err);
+    throw new Error('Unexpected error, try again in a few minutes.');
+  }
+});
