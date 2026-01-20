@@ -21,7 +21,11 @@ import StoreCategoryButton from "./_components/store-category-button";
 import { categoriesTableColumns } from "./_components/table-columns";
 
 const CategoriesPage = async () => {
-  const categories = await getCategories();
+  const categories = await getCategories({
+    includeProducts: true,
+    offset: 0,
+    limit: 10,
+  });
 
   const breadcrumbs = (
     <Breadcrumb>
