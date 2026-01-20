@@ -43,8 +43,8 @@ const CategoriesTableActions = ({ category }: Props) => {
       router.push("/dashboard/categories");
       router.refresh();
     },
-    onError: () => {
-      toast.error("Erro ao deletar a categoria. Tente novamente.");
+    onError: (err) => {
+      toast.error(err.error.serverError || "Erro ao remover categoria.");
     },
   });
 
