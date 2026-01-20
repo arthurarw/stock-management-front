@@ -5,6 +5,8 @@ export function proxy(req: NextRequest) {
   const isProtected = req.nextUrl.pathname.startsWith('/dashboard');
   const isLoginPage = req.nextUrl.pathname === '/';
 
+  console.log('Proxy middleware triggered', isLoginPage);
+
   if (isProtected && !token) {
     return NextResponse.redirect(new URL('/', req.url));
   }

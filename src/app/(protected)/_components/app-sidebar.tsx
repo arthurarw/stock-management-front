@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -71,6 +71,7 @@ export function AppSidebar({ name, email }: Props) {
 
   const handleSignOut = async () => {
     await api.post("/auth/logout");
+    redirect("/");
   };
 
   return (
